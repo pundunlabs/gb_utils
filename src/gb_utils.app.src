@@ -1,0 +1,8 @@
+{application, gb_utils,
+ [{description, "Growbeard Utils library application"},
+  {vsn, "0.1"},
+  {registered, []},
+  {applications, [stdlib, kernel]},
+  {modules, []},
+  {env, []}
+ ]}.
