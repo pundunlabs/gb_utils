@@ -3,6 +3,6 @@
   {vsn, "0.1"},
   {registered, []},
   {applications, [stdlib, kernel]},
-  {modules, []},
+  {modules, [gb_beam_autoloader, gb_stream_tar]},
   {env, []}
  ]}.
