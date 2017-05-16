@@ -115,7 +115,7 @@ handle_cast(check, State) ->
 %%--------------------------------------------------------------------
 handle_info(check, State) ->
     All = code:all_loaded(),
-    R = [check_md5(B) || B <- All],
+    R = check_m(All),
     print_loaded(lists:flatten(R)),
     erlang:send_after(?INTERVAL, self(), check),
     {noreply, State}.
@@ -148,6 +148,13 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+check_m(All) ->
+    check_m(All, []).
+check_m([MP|R],Res) ->
+    check_m(R, [check_md5(MP) | Res]);
+check_m([], Res) ->
+    Res.
+
 check_md5({M, Path}) ->
     try
 	{ok, {M, FileMD5}} = beam_lib:md5(Path),
