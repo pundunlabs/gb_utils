@@ -51,7 +51,7 @@ rec_loop(#{status := done} = State) ->
 rec_loop(#{socket:=Socket} = State) ->
     case gen_tcp:recv(Socket, maps:get(size, State), 120000) of 
     	{ok, Data} ->
-	    ?debug("read size ~p; received size ~p", [maps:get(size, State), size(Data)]),
+	    ?debug("known rem bytes: ~p; received size ~p", [maps:get(size, State), size(Data)]),
 	    gen_tcp:send(maps:get(socket, State), "k"),
 	    NewState = handle_rcv_data(State, Data),
 	    rec_loop(NewState);
@@ -67,7 +67,7 @@ rec_loop(#{socket:=Socket} = State) ->
 handle_rcv_data(State = #{size:=0}, <<0:32>>) ->
     State#{size=>0, status=>done};
 handle_rcv_data(State = #{size:=0}, <<Size:32, Data/binary>>) ->
-    io:format("got new size ~p~n", [Size]),
+    ?debug("size of incoming data: ~p", [Size]),
     port_command(maps:get(tar, State), Data),
     State#{size=>Size - size(Data)};
 handle_rcv_data(State = #{size:=Size}, Data) ->
